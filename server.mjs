@@ -1,4 +1,3 @@
-// Lance avec: node server.mjs   (Node ≥ 18)
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 
@@ -8,18 +7,16 @@ const SOURCES = [
   "https://test-streams.mux.dev/pts_shift/master.m3u8",
 ];
 
-// Si master playlist, descend récursivement vers le 1er variant.
-async function resolve(url) {
+async function resolveToMediaPlaylist(url) {
   const text = await fetch(url).then((r) => r.text());
   if (!text.includes("#EXT-X-STREAM-INF")) return { url, text };
   const lines = text.split("\n");
   const i = lines.findIndex((l) => l.startsWith("#EXT-X-STREAM-INF"));
-  return resolve(new URL(lines[i + 1].trim(), url).href);
+  return resolveToMediaPlaylist(new URL(lines[i + 1].trim(), url).href);
 }
 
-// Garde #EXTINF + URL absolutisée, jette le reste.
 async function segmentsOf(src) {
-  const { url, text } = await resolve(src);
+  const { url, text } = await resolveToMediaPlaylist(src);
   return text
     .split("\n")
     .map((l) => l.trim())
