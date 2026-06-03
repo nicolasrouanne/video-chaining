@@ -1,0 +1,13 @@
+{
+  "setupTasks": [],
+  "tasks": {
+    "start": {
+      "name": "Run server",
+      "command": "node server.mjs",
+      "runAtStart": true,
+      "preview": {
+        "port": 4173
+      }
+    }
+  }
+}
