@@ -1,5 +1,7 @@
 # video-chaining
 
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/nicolasrouanne/video-chaining/main)
+
 Proof of concept: chain multiple HLS videos into a single, gap-less playback
 session using **server-side playlist concatenation** — not double buffering.
 
@@ -9,7 +11,16 @@ and the frontend plays the result with a single `<video>` + `hls.js`. The
 gap-less chaining is native to HLS — no JavaScript swap logic, no second
 hidden player.
 
-## Quick start
+## Run it
+
+### In CodeSandbox (one click)
+
+Open <https://codesandbox.io/p/github/nicolasrouanne/video-chaining/main>.
+
+The sandbox auto-runs `node server.mjs` and exposes the player on the preview
+panel. No build step, no install — `hls.js` is loaded from a CDN at runtime.
+
+### Locally
 
 ```sh
 node server.mjs    # Node ≥ 18 (relies on native fetch)
@@ -67,3 +78,6 @@ directly from the video CDN, so the server stays cheap.
 
 - `server.mjs` — 47 lines. Node http server.
 - `index.html` — 35 lines. Single `<video>` + `hls.js` from jsdelivr CDN.
+- `package.json` — declares the project as Node (used by CodeSandbox).
+- `.codesandbox/tasks.json` — tells CodeSandbox to auto-run the server and
+  expose port 4173 as a preview.
