@@ -45,7 +45,7 @@
   };
   const playlistUrl = `/playlist.m3u8${location.search}`;
   if (Hls.isSupported()) {
-    const h = new Hls();
+    const h = new Hls({ startFragPrefetch: true });
     h.loadSource(playlistUrl);
     h.attachMedia(v);
   } else if (v.canPlayType("application/vnd.apple.mpegurl")) {
