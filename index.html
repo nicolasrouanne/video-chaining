@@ -48,6 +48,7 @@
     const h = new Hls({ startFragPrefetch: true });
     h.loadSource(playlistUrl);
     h.attachMedia(v);
+    window.hls = h; // inspect hls.levels / hls.currentLevel in DevTools console
   } else if (v.canPlayType("application/vnd.apple.mpegurl")) {
     v.src = playlistUrl;
   }
