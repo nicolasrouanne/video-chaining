@@ -19,17 +19,36 @@
     color: #5b8def;
   }
 </style>
-<h1>HLS concat — 1 player, 3 chained videos</h1>
+<h1>HLS concat — 1 player, N chained videos</h1>
 <video id="v" controls autoplay muted playsinline></video>
 <p>Manifest: <a href="/playlist.m3u8" target="_blank">/playlist.m3u8</a></p>
+<details>
+  <summary>Use your own m3u8 URLs (creates a shareable link)</summary>
+  <form id="form" style="margin-top: 8px">
+    <textarea
+      id="src"
+      rows="6"
+      style="width: 100%; background: #222; color: #eee; border: 1px solid #333; padding: 8px"
+      placeholder="One m3u8 URL per line"></textarea>
+    <button type="submit" style="margin-top: 8px; padding: 6px 14px">Play these</button>
+  </form>
+</details>
 <script type="module">
   import Hls from "https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.mjs";
   const v = document.getElementById("v");
+  const sources = new URLSearchParams(location.search).getAll("source");
+  document.getElementById("src").value = sources.join("\n");
+  document.getElementById("form").onsubmit = (e) => {
+    e.preventDefault();
+    const lines = document.getElementById("src").value.split("\n").map((l) => l.trim()).filter(Boolean);
+    location.search = lines.map((l) => `source=${encodeURIComponent(l)}`).join("&");
+  };
+  const playlistUrl = `/playlist.m3u8${location.search}`;
   if (Hls.isSupported()) {
     const h = new Hls();
-    h.loadSource("/playlist.m3u8");
+    h.loadSource(playlistUrl);
     h.attachMedia(v);
   } else if (v.canPlayType("application/vnd.apple.mpegurl")) {
-    v.src = "/playlist.m3u8";
+    v.src = playlistUrl;
   }
 </script>

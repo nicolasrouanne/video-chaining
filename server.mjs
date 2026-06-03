@@ -27,8 +27,11 @@ async function segmentsOf(src) {
 
 http
   .createServer(async (req, res) => {
-    if (req.url === "/playlist.m3u8") {
-      const parts = await Promise.all(SOURCES.map(segmentsOf));
+    if (req.url.startsWith("/playlist.m3u8")) {
+      const qs = new URLSearchParams(req.url.split("?")[1] ?? "");
+      const submitted = qs.getAll("source");
+      const sources = submitted.length ? submitted : SOURCES;
+      const parts = await Promise.all(sources.map(segmentsOf));
       res.writeHead(200, { "Content-Type": "application/vnd.apple.mpegurl" });
       res.end(
         ["#EXTM3U", "#EXT-X-VERSION:6", "#EXT-X-TARGETDURATION:11", "#EXT-X-PLAYLIST-TYPE:VOD"]
